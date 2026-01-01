@@ -13,9 +13,13 @@ const sceneInfo = document.getElementById('sceneInfo');
 let animationFrame;
 let isPlaying = false;
 let currentTime = 0;
+let lastTimestamp = 0;
 const DURATION = 45000; // 45 seconds
 const FPS = 30;
 const FRAME_TIME = 1000 / FPS;
+
+// Film grain pattern (pre-generated for performance)
+const GRAIN_PARTICLES = 50; // Reduced from 100 for better performance
 
 // Character drawing functions
 class Character {
@@ -31,10 +35,15 @@ class Character {
     draw(bounce = 0, armWave = 0) {
         const baseY = this.y + bounce;
         
-        // Body (rounded rectangle)
+        // Body (rounded rectangle with fallback)
         ctx.fillStyle = this.color;
         ctx.beginPath();
-        ctx.roundRect(this.x - 15, baseY, 30, 45, 5);
+        if (ctx.roundRect) {
+            ctx.roundRect(this.x - 15, baseY, 30, 45, 5);
+        } else {
+            // Fallback for older browsers
+            ctx.rect(this.x - 15, baseY, 30, 45);
+        }
         ctx.fill();
         
         // Head (circle)
@@ -92,10 +101,15 @@ class Character {
             ctx.beginPath();
             ctx.arc(this.x, baseY - 15, 22, 0, Math.PI * 2);
             ctx.fill();
-            // Hood opening
+            // Hood opening (with fallback)
             ctx.fillStyle = '#fdbf6f';
             ctx.beginPath();
-            ctx.ellipse(this.x, baseY - 12, 12, 15, 0, 0, Math.PI * 2);
+            if (ctx.ellipse) {
+                ctx.ellipse(this.x, baseY - 12, 12, 15, 0, 0, Math.PI * 2);
+            } else {
+                // Fallback: use circle for older browsers
+                ctx.arc(this.x, baseY - 12, 12, 0, Math.PI * 2);
+            }
             ctx.fill();
             // Redraw eyes in hood
             ctx.fillStyle = '#fff';
@@ -267,7 +281,17 @@ function drawSnowflake(x, y, size) {
 function animate(timestamp) {
     if (!isPlaying) return;
     
-    currentTime += FRAME_TIME;
+    // Initialize lastTimestamp on first frame
+    if (lastTimestamp === 0) {
+        lastTimestamp = timestamp;
+    }
+    
+    // Calculate elapsed time since last frame
+    const deltaTime = timestamp - lastTimestamp;
+    lastTimestamp = timestamp;
+    
+    // Update current time
+    currentTime += deltaTime;
     if (currentTime > DURATION) {
         currentTime = DURATION;
         pause();
@@ -352,9 +376,9 @@ function animate(timestamp) {
         });
     }
     
-    // Add film grain effect
+    // Add film grain effect (optimized with fewer particles)
     ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < GRAIN_PARTICLES; i++) {
         const x = Math.random() * 800;
         const y = Math.random() * 600;
         ctx.fillRect(x, y, 1, 1);
@@ -386,16 +410,15 @@ function animate(timestamp) {
     updateProgress();
     
     // Continue animation
-    setTimeout(() => {
-        if (isPlaying) {
-            animationFrame = requestAnimationFrame(animate);
-        }
-    }, FRAME_TIME);
+    if (isPlaying) {
+        animationFrame = requestAnimationFrame(animate);
+    }
 }
 
 function play() {
     if (!isPlaying) {
         isPlaying = true;
+        lastTimestamp = 0; // Reset timestamp for accurate timing
         animationFrame = requestAnimationFrame(animate);
         playBtn.disabled = true;
         pauseBtn.disabled = false;
@@ -414,6 +437,7 @@ function pause() {
 function restart() {
     pause();
     currentTime = 0;
+    lastTimestamp = 0; // Reset timestamp
     ctx.clearRect(0, 0, 800, 600);
     drawBackground(0);
     updateProgress();
