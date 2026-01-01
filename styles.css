@@ -1,0 +1,128 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Courier New', monospace;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    color: #f0f0f0;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+h1 {
+    text-align: center;
+    font-size: 2.5em;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    color: #ffcc00;
+}
+
+h2 {
+    text-align: center;
+    font-size: 1.5em;
+    margin-bottom: 30px;
+    font-style: italic;
+    color: #cccccc;
+}
+
+.film-container {
+    background: #000;
+    border: 8px solid #8b7355;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+#filmCanvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    background: #87ceeb;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+
+.controls {
+    background: #3a3a3a;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.controls button {
+    background: #ffcc00;
+    border: none;
+    padding: 12px 24px;
+    margin: 0 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.3s;
+    font-family: 'Courier New', monospace;
+}
+
+.controls button:hover {
+    background: #ffdd33;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(255, 204, 0, 0.4);
+}
+
+.controls button:active {
+    transform: translateY(0);
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #1a1a1a;
+    border-radius: 4px;
+    margin-top: 15px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ffcc00 0%, #ff9900 100%);
+    width: 0%;
+    transition: width 0.1s linear;
+}
+
+#sceneInfo {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #ffcc00;
+    font-weight: bold;
+}
+
+.description {
+    background: #2a2a2a;
+    padding: 20px;
+    border-radius: 8px;
+    line-height: 1.6;
+}
+
+.description h3 {
+    color: #ffcc00;
+    margin-bottom: 15px;
+}
+
+.description p {
+    margin-bottom: 10px;
+    color: #cccccc;
+}
+
+.description strong {
+    color: #ffcc00;
+}
